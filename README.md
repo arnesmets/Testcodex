@@ -21,6 +21,7 @@ python wandel_reminder.py [--interval MINUTEN] [--start HH:MM] [--end HH:MM] [--
 Met de knop **Settings** kan dit interval tijdens het draaien worden aangepast;
 de wijziging gaat meteen in.
 
+
 Het venster kan gewoon geminimaliseerd worden zodat het programma op de
 achtergrond blijft draaien. Op Windows kan het eventueel gestart worden
 met `pythonw` zodat geen consolevenster zichtbaar is. Met de knop

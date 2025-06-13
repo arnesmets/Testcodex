@@ -99,6 +99,11 @@ def main() -> None:
     pause_btn = tk.Button(root, text="Pause", command=pause)
     pause_btn.pack(fill="x")
 
+    trigger_btn = tk.Button(
+        root, text="Trigger", command=lambda: stuur_melding(args.icon)
+    )
+    trigger_btn.pack(fill="x")
+
     exit_btn = tk.Button(root, text="Exit", command=stop)
     exit_btn.pack(fill="x")
 

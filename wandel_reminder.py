@@ -6,10 +6,10 @@ import argparse
 import datetime as _dt
 import logging
 import sys
-import time
 
 from plyer import notification
 import tkinter as tk
+from tkinter import simpledialog
 
 
 def _beep() -> None:
@@ -64,40 +64,46 @@ def main() -> None:
     )
 
     interval_ms = args.interval * 60 * 1000
-
-    running = True
-
-    def start() -> None:
-        nonlocal running
-        running = True
-
-    def pause() -> None:
-        nonlocal running
-        running = False
+    after_id: str | None = None
 
     def stop() -> None:
         root.destroy()
 
+    def _schedule() -> None:
+        nonlocal after_id
+        after_id = root.after(interval_ms, loop)
+
+    def open_settings() -> None:
+        nonlocal interval_ms, after_id
+        result = simpledialog.askinteger(
+            "Instellingen",
+            "Aantal minuten tussen meldingen:",
+            parent=root,
+            initialvalue=interval_ms // 60000,
+            minvalue=1,
+        )
+        if result is not None:
+            interval_ms = result * 60 * 1000
+            if after_id is not None:
+                root.after_cancel(after_id)
+            _schedule()
+
     def loop() -> None:
         now = _dt.datetime.now().time()
-        if running:
-            allowed = True
-            if args.start and now < args.start:
-                allowed = False
-            if args.end and now > args.end:
-                allowed = False
-            if allowed:
-                stuur_melding(args.icon)
-        root.after(interval_ms, loop)
+        allowed = True
+        if args.start and now < args.start:
+            allowed = False
+        if args.end and now > args.end:
+            allowed = False
+        if allowed:
+            stuur_melding(args.icon)
+        _schedule()
 
     root = tk.Tk()
     root.title("Wandel Reminder")
 
-    start_btn = tk.Button(root, text="Start", command=start)
-    start_btn.pack(fill="x")
-
-    pause_btn = tk.Button(root, text="Pause", command=pause)
-    pause_btn.pack(fill="x")
+    settings_btn = tk.Button(root, text="Settings", command=open_settings)
+    settings_btn.pack(fill="x")
 
     trigger_btn = tk.Button(
         root, text="Trigger", command=lambda: stuur_melding(args.icon)
@@ -107,7 +113,7 @@ def main() -> None:
     exit_btn = tk.Button(root, text="Exit", command=stop)
     exit_btn.pack(fill="x")
 
-    root.after(interval_ms, loop)
+    _schedule()
     root.mainloop()
 
 

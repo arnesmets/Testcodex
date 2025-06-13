@@ -18,7 +18,8 @@ python wandel_reminder.py [--interval MINUTEN] [--start HH:MM] [--end HH:MM] [--
 - `--start` en `--end` geven optionele begin- en eindtijden op.
 - `--icon` wijst naar een icoonbestand dat in de melding wordt getoond.
 
-Met de knop **Settings** kan dit interval tijdens het draaien worden aangepast.
+Met de knop **Settings** kan dit interval tijdens het draaien worden aangepast;
+de wijziging gaat meteen in.
 
 Het venster kan gewoon geminimaliseerd worden zodat het programma op de
 achtergrond blijft draaien. Op Windows kan het eventueel gestart worden

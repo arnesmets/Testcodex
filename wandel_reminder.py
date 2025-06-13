@@ -64,12 +64,17 @@ def main() -> None:
     )
 
     interval_ms = args.interval * 60 * 1000
+    after_id: str | None = None
 
     def stop() -> None:
         root.destroy()
 
+    def _schedule() -> None:
+        nonlocal after_id
+        after_id = root.after(interval_ms, loop)
+
     def open_settings() -> None:
-        nonlocal interval_ms
+        nonlocal interval_ms, after_id
         result = simpledialog.askinteger(
             "Instellingen",
             "Aantal minuten tussen meldingen:",
@@ -79,6 +84,9 @@ def main() -> None:
         )
         if result is not None:
             interval_ms = result * 60 * 1000
+            if after_id is not None:
+                root.after_cancel(after_id)
+            _schedule()
 
     def loop() -> None:
         now = _dt.datetime.now().time()
@@ -89,7 +97,7 @@ def main() -> None:
             allowed = False
         if allowed:
             stuur_melding(args.icon)
-        root.after(interval_ms, loop)
+        _schedule()
 
     root = tk.Tk()
     root.title("Wandel Reminder")
@@ -105,7 +113,7 @@ def main() -> None:
     exit_btn = tk.Button(root, text="Exit", command=stop)
     exit_btn.pack(fill="x")
 
-    root.after(interval_ms, loop)
+    _schedule()
     root.mainloop()
 
 
